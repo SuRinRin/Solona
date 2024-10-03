@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Test</title>
+</head>
+
+<body>
+    <h1>Update Test</h1>
+    <form id="updateTestForm" action="/test/update/<%= test._id %>" method="POST">
+        <label for="name">Test Name:</label>
+        <input type="text" id="name" name="name" value="<%= test.name %>" required>
+        <label for="image">Test Image:</label>
+        <input type="text" id="image" name="image" value="<%= test.image %>" required>
+        <label for="category">Category:</label>
+        <select id="categorySelect" name="category" onchange="getQuestionsBySelectedCategory()">
+            <% categories.forEach(category=> { %>
+                <option value="<%= category._id %>" <%= test.category.toString() === category._id.toString() ? 'selected' : '' %>>
+                    <%= category.name %>
+                </option>
+            <% }); %>
+        </select>
+
+        <div id="questionList"></div>
+        <label for="questions">Questions:</label>
+        <% questions.forEach(question=> { %>
+            <input type="checkbox" id="<%= question._id %>" name="questions" value="<%= question._id %>" <% if (test.questions.map(q => q.toString()).includes(question._id.toString())) { %> checked <% } %>>
+            <label for="<%= question._id %>">
+                <%= question.content %>
+            </label><br>
+        <% }); %>
+        <!-- End loop -->
+        <button type="submit">Update</button>
+    </form>
+
+    <script>
+        async function getQuestionsBySelectedCategory() {
+            const categoryId = document.getElementById('categorySelect').value;
+            const response = await fetch(`/question/category/${categoryId}/json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            data.forEach(question => {
+                const checkbox = document.getElementById(question._id);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        document.getElementById("updateTestForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            updateTest();
+        });
+
+        async function updateTest() {
+            const testName = document.getElementById('name').value;
+            const testImage = document.getElementById('image').value;
+            const category = document.getElementById('categorySelect').value;
+            const selectedQuestions = [];
+            document.querySelectorAll('input[name="questions"]:checked').forEach(question => {
+                selectedQuestions.push(question.value);
+            });
+
+            fetch('/test/update/<%= test._id %>', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: testName,
+                        image: testImage,
+                        category: category,
+                        questions: selectedQuestions,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    window.location.href = '/test';
+                })
+                .catch(error => {
+                    console.error('Error updating test:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmed Exchange Requests</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial';
+        }
+        /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            padding-top: 3rem;
+            overflow-y: auto;
+            z-index: 1;
+        }
+
+        .sidebar-nav-link {
+            padding: 10px;
+            color: #000;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar-nav-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Center content */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-left: 250px;
+        }
+
+        /* Style for table */
+        table {
+            width: calc(100% - 250px); /* Subtracting sidebar width from 100% */
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-nav-link active">
+            <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%; margin-bottom: 10px;">
+                <img src="<%= user.avatar %>" alt="User Avatar" style="width: 100%; height: auto;">
+            </div>
+            <p style="margin-bottom: 1em;">
+                <%= user.email %>
+            </p>
+        </div>
+
+        <a href="http://localhost:6002/question" class="sidebar-nav-link active">Quản lý câu hỏi</a>
+        <a href="http://localhost:6002/category" class="sidebar-nav-link">Danh sách thể loại </a>
+        <a href="http://localhost:6002/test" class="sidebar-nav-link">Quản lý quizz </a>
+        <a href="http://localhost:6002/nft" class="sidebar-nav-link">NFTs</a>
+        <a href="http://localhost:6002/api/notf/confirm" class="sidebar-nav-link">Quản lý đổi thưởng</a>
+        <a href="http://localhost:6002/api/notf/confirmH" class="sidebar-nav-link">Lịch sử xác nhận</a>
+
+    </div>
+    <h1 style="align-items: center; display: flex; justify-content: center; margin-right: 112px;">Lịch sử xác nhận</h1>
+    <div class="content">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>WalletId</th>
+                    <th>Token Address</th>
+                    <th>Request Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% confirmedRequests.forEach((request, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= request.userId %></td>
+                        <td><%= request.nftId %></td>
+                        <td><%= request.requestTime %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
